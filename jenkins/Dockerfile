@@ -34,7 +34,8 @@ RUN add-apt-repository \
    $(lsb_release -cs) stable"
 
 # Install Docker CLI
-RUN apt-get update && apt-get install -y docker-ce-cli
+RUN apt-get update
+RUN apt-get install -y docker-ce-cli
 
 # Install Git
 RUN apt-get install -y git
