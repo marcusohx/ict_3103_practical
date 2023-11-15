@@ -20,7 +20,10 @@ COPY default-user.groovy /usr/share/jenkins/ref/init.groovy.d/
 # Define volume for Jenkins data
 VOLUME /var/jenkins_home 
 
-# Update packages and install necessary tools
+# Switch to root to install packages
+USER root
+
+# Install necessary packages
 RUN apt-get update && apt-get install -y apt-transport-https \
    ca-certificates curl gnupg2 \
    software-properties-common
@@ -34,8 +37,7 @@ RUN add-apt-repository \
    $(lsb_release -cs) stable"
 
 # Install Docker CLI
-RUN apt-get update
-RUN apt-get install -y docker-ce-cli
+RUN apt-get update && apt-get install -y docker-ce-cli
 
 # Install Git
 RUN apt-get install -y git
@@ -44,5 +46,3 @@ RUN apt-get install -y git
 RUN groupadd docker 
 RUN usermod -aG docker jenkins
 
-# Switch back to the Jenkins user
-USER jenkins
