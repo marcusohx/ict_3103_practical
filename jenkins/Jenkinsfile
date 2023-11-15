@@ -1,0 +1,59 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    // Define SonarQube scanner properties
+                    def sonarScannerMsBuildHome = tool 'SonarQubeScanner'
+                    withSonarQubeEnv('sonarQube server') {
+                        sh """
+                           ${sonarScannerMsBuildHome}/bin/sonar-scanner \
+                           -Dsonar.projectKey=my_project_key \
+                           -Dsonar.sources=. \
+                           -Dsonar.host.url=http://sonarqube:9000 \
+                           -Dsonar.login=admin \
+                           -Dsonar.password=2101738
+                        """
+                    }
+                }
+            }
+        }
+
+
+        stage('Build Docker Image') {
+            steps {
+                echo 'Building Docker Image for webapp'
+                dir('webapp') {
+                    sh 'docker build -t webapp .'
+                }
+            }
+        }
+
+        stage('Start Docker Container') {
+            steps {
+                echo 'Starting Docker Container webapp'
+                sh 'docker stop webapp_search || true'
+                sh 'docker rm webapp_search || true'
+                sh 'docker run -d -p 3000:3000 --name webapp_search webapp'
+            }
+        }
+        stage('Run Tests') {
+            steps {
+                echo 'Running Tests in nextjsapp_login'
+                sh 'docker exec webapp_search node ./test/Home.spec.js'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Post-Execution Cleanup'
+            sh 'docker stop webapp_search || true'
+            sh 'docker rm webapp_search || true'
+            sh 'docker compose up webapp -d'
+        }   
+    }
+}

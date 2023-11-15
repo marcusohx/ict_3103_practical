@@ -12,45 +12,45 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./jenkins_home:/var/jenkins_home
   
-  # webapp:
-  #   container_name: webapp
-  #   build:
-  #     context: ./webapp/
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "3000:3000"
-#   sonarqube:
-#     image: sonarqube
-#     environment:
-#       - SONARQUBE_JDBC_USERNAME=sonar
-#       - SONARQUBE_JDBC_PASSWORD=sonar
-#       - SONARQUBE_JDBC_URL=jdbc:postgresql://db:5432/sonar
-#       - SONAR_JAVA_OPTS=-Xmx512m -Xms512m -XX:+HeapDumpOnOutOfMemoryError
-#     ports:
-#       - "9000:9000"
-#     depends_on:
-#       - db
-#     networks:
-#       - sonarnet
-#     volumes:
-#       - ./sonarqube_data:/opt/sonarqube/data
-#       - ./sonarqube_extensions:/opt/sonarqube/extensions
-#       - ./sonarqube_logs:/opt/sonarqube/logs
-#     container_name: sonarqube
+  webapp:
+    container_name: webapp_search
+    build:
+      context: ./webapp/
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+  sonarqube:
+    image: sonarqube
+    environment:
+      - SONARQUBE_JDBC_USERNAME=sonar
+      - SONARQUBE_JDBC_PASSWORD=sonar
+      - SONARQUBE_JDBC_URL=jdbc:postgresql://db:5432/sonar
+      - SONAR_JAVA_OPTS=-Xmx512m -Xms512m -XX:+HeapDumpOnOutOfMemoryError
+    ports:
+      - "9000:9000"
+    depends_on:
+      - db
+    networks:
+      - sonarnet
+    volumes:
+      - ./sonarqube_data:/opt/sonarqube/data
+      - ./sonarqube_extensions:/opt/sonarqube/extensions
+      - ./sonarqube_logs:/opt/sonarqube/logs
+    container_name: sonarqube
 
-#   db:
-#     image: postgres
-#     environment:
-#       - POSTGRES_USER=sonar
-#       - POSTGRES_PASSWORD=sonar
-#     networks:
-#       - sonarnet
-#     volumes:
-#       - ./postgresql_data:/var/lib/postgresql/data
-#     container_name: sonardb
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_USER=sonar
+      - POSTGRES_PASSWORD=sonar
+    networks:
+      - sonarnet
+    volumes:
+      - ./postgresql_data:/var/lib/postgresql/data
+    container_name: sonardb
 
-# networks:
-#   sonarnet:
+networks:
+  sonarnet:
 volumes:
   sonarqube_data:
   sonarqube_extensions:
