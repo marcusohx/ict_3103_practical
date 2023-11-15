@@ -13,7 +13,7 @@ pipeline {
                            ${sonarScannerMsBuildHome}/bin/sonar-scanner \
                            -Dsonar.projectKey=my_project_key \
                            -Dsonar.sources=. \
-                           -Dsonar.host.url=http://sonarqube:9000 \
+                           -Dsonar.host.url=http://localhost:9000 \
                            -Dsonar.login=admin \
                            -Dsonar.password=2101738
                         """
