@@ -11,7 +11,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./jenkins_home:/var/jenkins_home
-  
+    networks:
+      - sonarnet
   webapp:
     container_name: webapp_search
     build:
@@ -19,6 +20,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
+    networks:
+      - sonarnet
   sonarqube:
     image: sonarqube
     environment:
